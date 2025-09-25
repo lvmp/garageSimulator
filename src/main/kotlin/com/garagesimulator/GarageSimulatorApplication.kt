@@ -1,4 +1,4 @@
-package com.garagesimulator.garage_simulator
+package com.garagesimulator
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
