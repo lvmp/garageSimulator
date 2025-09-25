@@ -1,4 +1,4 @@
-package com.garagesimulator.garage_simulator
+package com.garagesimulator
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
