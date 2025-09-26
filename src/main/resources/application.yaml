@@ -1,3 +1,12 @@
+server:
+  port: ${SERVER_PORT:8080}
 spring:
   application:
     name: garage-simulator
+  datasource:
+    url: jdbc:mysql://localhost:3306/garage_db
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
