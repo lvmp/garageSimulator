@@ -61,7 +61,7 @@ Para um ciclo de desenvolvimento mais rápido, você pode rodar a aplicação Sp
     *   Certifique-se de que o Java 21 está configurado.
     *   Execute a classe principal `GarageSimulatorApplication.kt` (ou use a tarefa `bootRun` do Gradle: `./gradlew bootRun`).
 
-    A aplicação se conectará automaticamente ao `mysql-db` (via `localhost:3303`) e o simulador enviará eventos para `localhost:3003`.
+    A aplicação se conectará automaticamente ao `mysql-db` (via `localhost:3306`) e o simulador enviará eventos para `localhost:3003`.
 
 ## Endpoints da API
 
