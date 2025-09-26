@@ -21,7 +21,7 @@ O projeto segue os princípios da **Clean Architecture**, com uma clara separaç
 
 ## Como Instalar e Executar
 
-O projeto utiliza Docker Compose para orquestrar a aplicação e o banco de dados.
+O projeto utiliza Docker Compose para orquestrar a aplicação, o banco de dados e o simulador de eventos.
 
 ### Pré-requisitos
 
@@ -39,14 +39,29 @@ O projeto utiliza Docker Compose para orquestrar a aplicação e o banco de dado
     ```bash
     docker-compose up --build
     ```
-    Este comando irá construir a imagem da aplicação e iniciar os serviços do banco de dados MySQL e da aplicação backend. O `healthcheck` garante que a aplicação só inicie após o banco de dados estar pronto.
+    Este comando irá construir a imagem da aplicação e iniciar os serviços do banco de dados MySQL, da aplicação backend e do simulador de eventos. O `healthcheck` garante que a aplicação só inicie após o banco de dados estar pronto.
 
 3.  **Verifique os serviços:**
-    Após a execução, você deverá ver os logs dos serviços `mysql-db` e `garage-app` no terminal. A aplicação estará disponível na porta `3003`.
+    Após a execução, você deverá ver os logs dos serviços `mysql-db`, `garage-app` e `garage-simulator` no terminal. A aplicação estará disponível na porta `3003`.
 
-### Observação sobre o Simulador
+## Desenvolvimento Local (Spring Boot + Docker)
 
-O serviço `garage-simulator` foi temporariamente removido do `docker-compose.yml` devido à indisponibilidade da imagem no Docker Hub. A simulação de eventos de entrada e saída de veículos não será possível até que uma imagem alternativa seja fornecida ou construída.
+Para um ciclo de desenvolvimento mais rápido, você pode rodar a aplicação Spring Boot diretamente da sua IDE, enquanto o MySQL e o simulador continuam no Docker.
+
+### Passos para Desenvolvimento Local
+
+1.  **Inicie apenas os serviços de infraestrutura com Docker Compose:**
+    ```bash
+    docker-compose up mysql-db garage-simulator
+    ```
+    Isso iniciará o banco de dados MySQL e o simulador de eventos.
+
+2.  **Execute a aplicação Spring Boot:**
+    *   Abra o projeto na sua IDE (IntelliJ IDEA, VS Code, etc.).
+    *   Certifique-se de que o Java 21 está configurado.
+    *   Execute a classe principal `GarageSimulatorApplication.kt` (ou use a tarefa `bootRun` do Gradle: `./gradlew bootRun`).
+
+    A aplicação se conectará automaticamente ao `mysql-db` (via `localhost:3303`) e o simulador enviará eventos para `localhost:3003`.
 
 ## Endpoints da API
 
