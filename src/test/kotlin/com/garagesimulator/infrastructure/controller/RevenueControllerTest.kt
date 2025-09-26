@@ -8,12 +8,12 @@ import com.fasterxml.jackson.module.kotlin.kotlinModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.mockk.every
 import io.mockk.mockk
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import java.time.Instant
@@ -38,12 +38,17 @@ class RevenueControllerTest {
         every { getRevenueUseCase.execute(any(), any()) } returns expectedAmount
 
         // Act & Assert
-        mockMvc.perform(get("/revenue")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(request)))
+        val result = mockMvc.perform(get("/revenue")
+            .param("date", request.date.toString())
+            .param("sector", request.sector))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.amount").value(expectedAmount))
-            .andExpect(jsonPath("$.currency").value("BRL"))
+            .andReturn()
+
+        val responseJson = result.response.contentAsString
+        val responseDTO = objectMapper.readValue(responseJson, RevenueResponseDTO::class.java)
+
+        assertEquals(expectedAmount, responseDTO.amount)
+        assertEquals("BRL", responseDTO.currency)
     }
 
     @Test
@@ -53,8 +58,9 @@ class RevenueControllerTest {
 
         // Act & Assert
         mockMvc.perform(get("/revenue")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(invalidRequestContent))
+            .param("date", "invalid-date")
+            .param("sector", "A"))
             .andExpect(status().isBadRequest)
     }
 }
+
