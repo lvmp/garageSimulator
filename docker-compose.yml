@@ -33,7 +33,12 @@ services:
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
-
+  garage-simulator:
+    image: cfontes0estapar/garage-sim:1.0.0
+    container_name: garage-event-simulator
+    network_mode: "host"
+    depends_on:
+      - garage-app
 
 volumes:
   mysql_data:
