@@ -33,6 +33,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SERVER_PORT=3003
+      - GARAGE_EVENT_URL=http://garage-event-simulator:3000
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3003/actuator/health"]
       interval: 30s
@@ -43,6 +44,8 @@ services:
   garage-event-simulator:
     image: cfontes0estapar/garage-sim:1.0.0
     container_name: garage-event-simulator
+    extra_hosts:
+      - "localhost:garage-app"
     ports:
       - "3000:3000"
 
