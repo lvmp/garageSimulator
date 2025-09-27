@@ -4,9 +4,11 @@ spring:
   application:
     name: garage-simulator
   datasource:
-    url: jdbc:mysql://localhost:3306/garage_db
-    username: root
-    password: root
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/garage_db}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:root}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+simulator:
+  base-url: http://localhost:3003

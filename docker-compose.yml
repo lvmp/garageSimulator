@@ -40,13 +40,11 @@ services:
       retries: 5
       start_period: 30s
 
-  garage-simulator:
+  garage-event-simulator:
     image: cfontes0estapar/garage-sim:1.0.0
     container_name: garage-event-simulator
-    network_mode: "host"
-    depends_on:
-      garage-app:
-        condition: service_healthy
+    ports:
+      - "3000:3000"
 
 volumes:
   mysql_data:

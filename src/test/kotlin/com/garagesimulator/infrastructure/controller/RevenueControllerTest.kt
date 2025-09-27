@@ -11,12 +11,10 @@ import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import java.time.Instant
 import java.time.LocalDate
 
 class RevenueControllerTest {
@@ -54,7 +52,7 @@ class RevenueControllerTest {
     @Test
     fun `deve retornar 400 Bad Request para data invalida`() {
         // Arrange
-        val invalidRequestContent = "{\"date\":\"invalid-date\", \"sector\":\"A\"}"
+        val invalidRequestContent = """{"date":"invalid-date", "sector":"A"}"""
 
         // Act & Assert
         mockMvc.perform(get("/revenue")
