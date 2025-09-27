@@ -63,6 +63,8 @@ Para um ciclo de desenvolvimento mais rápido, você pode rodar a aplicação Sp
 
     **Observação sobre a Porta:** Por padrão, o Spring Boot inicia na porta `8080`. No entanto, o simulador espera enviar eventos para a porta `3003`. Para testar com o simulador, certifique-se de que sua aplicação local esteja configurada para rodar na porta `3003` (por exemplo, adicionando `server.port=3003` ao seu `application.properties` ou `application.yaml` local, ou via variável de ambiente).
 
+    **Observação sobre o Cliente HTTP:** O cliente HTTP (`SimulatorHttpClient`) utiliza `RestClient` e sua `baseUrl` é configurada no `RestClientConfig.kt`.
+
     A aplicação se conectará automaticamente ao `mysql-db` (via `localhost:3306`) e o simulador enviará eventos para `localhost:3003`.
 
 ## Endpoints da API
