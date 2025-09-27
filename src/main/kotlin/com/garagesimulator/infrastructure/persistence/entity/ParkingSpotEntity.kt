@@ -14,7 +14,7 @@ data class ParkingSpotEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
-    @ManyToOne(cascade = [jakarta.persistence.CascadeType.ALL])
+    @ManyToOne(cascade = [jakarta.persistence.CascadeType.MERGE])
     val sector: SectorEntity,
 
     var isOccupied: Boolean,

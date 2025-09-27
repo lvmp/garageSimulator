@@ -23,11 +23,11 @@ class LoadInitialGarageConfigurationUseCase(
             val sectors = garageConfig.garage.map { dto ->
                 Sector(id = 0, name = dto.sector, basePrice = dto.basePrice, maxCapacity = dto.max_capacity)
             }
-            garageRepository.saveAllSectors(sectors)
-            logger.info("{} setores carregados e persistidos.", sectors.size)
+            val savedSectors = garageRepository.saveAllSectors(sectors)
+            logger.info("{} setores carregados e persistidos.", savedSectors.size)
 
             val spots = garageConfig.spots.map { dto ->
-                val sector = sectors.first { it.name == dto.sector }
+                val sector = savedSectors.first { it.name == dto.sector }
                 ParkingSpot(id = 0, sector = sector, isOccupied = false)
             }
             garageRepository.saveAllSpots(spots)

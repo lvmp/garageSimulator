@@ -50,7 +50,6 @@ class HandleVehicleEntryUseCase(
         )
 
         availableSpot.occupy()
-        garageRepository.saveAllSpots(listOf(availableSpot)) // Salva o estado da vaga
         parkingSessionRepository.save(session)
         logger.info("Veículo {} entrou com sucesso na vaga {}.", licensePlate, availableSpot.id)
     }

@@ -13,7 +13,7 @@ data class ParkingSessionEntity(
     @ManyToOne(cascade = [jakarta.persistence.CascadeType.ALL])
     val vehicle: VehicleEntity,
 
-    @ManyToOne(cascade = [jakarta.persistence.CascadeType.ALL])
+    @ManyToOne(cascade = [jakarta.persistence.CascadeType.MERGE])
     val parkingSpot: ParkingSpotEntity,
 
     val entryTime: LocalDateTime,

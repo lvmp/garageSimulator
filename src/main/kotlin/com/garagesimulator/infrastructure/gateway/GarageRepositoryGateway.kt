@@ -29,11 +29,13 @@ class GarageRepositoryGateway(
         return spotRepository.count().toInt()
     }
 
-    override fun saveAllSpots(spots: List<ParkingSpot>) {
-        spotRepository.saveAll(spots.map { spotMapper.toEntity(it) })
+    override fun saveAllSpots(spots: List<ParkingSpot>): List<ParkingSpot> {
+        val savedEntities = spotRepository.saveAll(spots.map { spotMapper.toEntity(it) })
+        return savedEntities.map { spotMapper.toDomain(it) }
     }
 
-    override fun saveAllSectors(sectors: List<Sector>) {
-        sectorRepository.saveAll(sectors.map { sectorMapper.toEntity(it) })
+    override fun saveAllSectors(sectors: List<Sector>): List<Sector> {
+        val savedEntities = sectorRepository.saveAll(sectors.map { sectorMapper.toEntity(it) })
+        return savedEntities.map { sectorMapper.toDomain(it) }
     }
 }
