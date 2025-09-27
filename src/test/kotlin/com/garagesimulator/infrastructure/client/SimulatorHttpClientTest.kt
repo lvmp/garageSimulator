@@ -19,7 +19,7 @@ class SimulatorHttpClientTest {
     @BeforeEach
     fun setUp() {
         restClient = mockk()
-        simulatorClient = SimulatorHttpClient(restClient, "http://localhost:3003")
+        simulatorClient = SimulatorHttpClient(restClient)
     }
 
     @Test

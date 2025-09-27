@@ -10,5 +10,20 @@ spring:
   jpa:
     hibernate:
       ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+    show-sql: false
 simulator:
   base-url: http://localhost:3003
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.springframework.web.servlet.DispatcherServlet: DEBUG
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+    org.zalando.logbook: DEBUG
+
+logbook:
+  format:
+    style: http
+  obfuscate:
+    headers:
+      - Authorization
+      - Cookie

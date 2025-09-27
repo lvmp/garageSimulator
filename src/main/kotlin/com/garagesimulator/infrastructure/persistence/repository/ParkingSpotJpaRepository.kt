@@ -8,6 +8,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ParkingSpotJpaRepository : JpaRepository<ParkingSpotEntity, Long> {
 
-    @Query("SELECT s FROM ParkingSpotEntity s WHERE s.sector.name = :sectorName AND s.isOccupied = false")
-    fun findFirstAvailableInSector(sectorName: String): ParkingSpotEntity?
+    fun findFirstBySectorNameAndIsOccupiedFalse(sectorName: String): ParkingSpotEntity?
 }

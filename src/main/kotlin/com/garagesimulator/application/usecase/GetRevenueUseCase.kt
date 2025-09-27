@@ -1,20 +1,20 @@
 package com.garagesimulator.application.usecase
 
 import com.garagesimulator.application.port.ParkingSessionRepositoryPort
+import org.slf4j.LoggerFactory
 import java.time.LocalDate
 
-/**
- * Caso de Uso para consultar o faturamento.
- * Pattern: Query
- * Princípio SOLID: SRP
- */
 class GetRevenueUseCase(
     private val parkingSessionRepository: ParkingSessionRepositoryPort,
 ) {
 
-    fun execute(date: LocalDate, sectorName: String): Double {
-        val finishedSessions = parkingSessionRepository.findFinishedByDateAndSector(date, sectorName)
+    private val logger = LoggerFactory.getLogger(GetRevenueUseCase::class.java)
 
-        return finishedSessions.sumOf { it.finalCost ?: 0.0 }
+    fun execute(date: LocalDate, sectorName: String): Double {
+        logger.info("Calculando receita para data {} e setor {}", date, sectorName)
+        val finishedSessions = parkingSessionRepository.findFinishedByDateAndSector(date, sectorName)
+        val totalRevenue = finishedSessions.sumOf { it.finalCost ?: 0.0 }
+        logger.info("Receita total para data {} e setor {}: {}", date, sectorName, totalRevenue)
+        return totalRevenue
     }
 }

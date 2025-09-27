@@ -6,6 +6,7 @@ import com.garagesimulator.application.exception.ParkingSessionNotFoundException
 import com.garagesimulator.application.usecase.HandleVehicleEntryUseCase
 import com.garagesimulator.application.usecase.HandleVehicleExitUseCase
 import com.garagesimulator.infrastructure.controller.dto.WebhookEventDTO
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -20,35 +21,53 @@ class WebhookController(
     private val handleVehicleExitUseCase: HandleVehicleExitUseCase
 ) {
 
+    private val logger = LoggerFactory.getLogger(WebhookController::class.java)
+
     @PostMapping
     fun handleWebhookEvent(@RequestBody event: WebhookEventDTO): ResponseEntity<String> {
+        logger.info("Recebendo evento: {}", event.event_type)
         return try {
             when (event.event_type) {
                 "ENTRY" -> {
                     event.entry_time?.let { entryTime ->
                         handleVehicleEntryUseCase.execute(event.license_plate, entryTime)
+                        logger.info("Evento ENTRY processado com sucesso para placa {}.", event.license_plate)
                         ResponseEntity.ok("Evento ENTRY processado com sucesso.")
-                    } ?: ResponseEntity.badRequest().body("entry_time é obrigatório para evento ENTRY.")
+                    } ?: run {
+                        logger.warn("entry_time é obrigatório para evento ENTRY da placa {}.", event.license_plate)
+                        ResponseEntity.badRequest().body("entry_time é obrigatório para evento ENTRY.")
+                    }
                 }
                 "EXIT" -> {
                     event.exit_time?.let { exitTime ->
                         handleVehicleExitUseCase.execute(event.license_plate, exitTime)
+                        logger.info("Evento EXIT processado com sucesso para placa {}.", event.license_plate)
                         ResponseEntity.ok("Evento EXIT processado com sucesso.")
-                    } ?: ResponseEntity.badRequest().body("exit_time é obrigatório para evento EXIT.")
+                    } ?: run {
+                        logger.warn("exit_time é obrigatório para evento EXIT da placa {}.", event.license_plate)
+                        ResponseEntity.badRequest().body("exit_time é obrigatório para evento EXIT.")
+                    }
                 }
                 "PARKED" -> {
-                    // Lógica para PARKED (se necessário, atualmente não impacta a regra de negócio principal)
+                    logger.info("Evento PARKED recebido para placa {} (não processado para lógica de negócio).", event.license_plate)
                     ResponseEntity.ok("Evento PARKED recebido (não processado para lógica de negócio).")
                 }
-                else -> ResponseEntity.badRequest().body("Tipo de evento desconhecido.")
+                else -> {
+                    logger.warn("Tipo de evento desconhecido: {} para placa {}.", event.event_type, event.license_plate)
+                    ResponseEntity.badRequest().body("Tipo de evento desconhecido.")
+                }
             }
         } catch (e: GarageFullException) {
+            logger.warn("Estacionamento lotado para entrada de {}: {}", event.license_plate, e.message)
             ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.message)
         } catch (e: NoAvailableSpotException) {
+            logger.warn("Nenhuma vaga disponível para entrada de {}: {}", event.license_plate, e.message)
             ResponseEntity.status(HttpStatus.CONFLICT).body(e.message)
         } catch (e: ParkingSessionNotFoundException) {
+            logger.warn("Sessão não encontrada para saída de {}: {}", event.license_plate, e.message)
             ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.message)
         } catch (e: Exception) {
+            logger.error("Erro interno ao processar evento {} para placa {}: {}", event.event_type, event.license_plate, e.message, e)
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno: ${e.message}")
         }
     }
