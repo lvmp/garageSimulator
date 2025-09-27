@@ -9,7 +9,7 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD:root}
   jpa:
     hibernate:
-      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:create-drop}
     show-sql: false
 simulator:
   base-url: http://localhost:3003
@@ -27,3 +27,7 @@ logbook:
     headers:
       - Authorization
       - Cookie
+
+garage:
+  event:
+    url: ${GARAGE_EVENT_URL:http://localhost:3000}
