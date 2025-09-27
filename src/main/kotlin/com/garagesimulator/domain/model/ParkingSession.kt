@@ -1,7 +1,7 @@
 package com.garagesimulator.domain.model
 
 import java.time.Duration
-import java.time.Instant
+import java.time.LocalDateTime
 import kotlin.math.ceil
 
 /**
@@ -13,8 +13,8 @@ data class ParkingSession(
     val id: Long,
     val vehicle: Vehicle,
     val parkingSpot: ParkingSpot,
-    val entryTime: Instant,
-    var exitTime: Instant? = null,
+    val entryTime: LocalDateTime,
+    var exitTime: LocalDateTime? = null,
     val dynamicPricePercentage: Double = 0.0, // Ex: 0.1 para +10%, -0.1 para -10%
     var finalCost: Double? = null,
 ) {

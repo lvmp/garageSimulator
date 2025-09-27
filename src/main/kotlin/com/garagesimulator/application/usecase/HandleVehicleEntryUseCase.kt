@@ -7,7 +7,7 @@ import com.garagesimulator.application.port.ParkingSessionRepositoryPort
 import com.garagesimulator.domain.model.ParkingSession
 import com.garagesimulator.domain.model.Vehicle
 import org.slf4j.LoggerFactory
-import java.time.Instant
+import java.time.LocalDateTime
 
 class HandleVehicleEntryUseCase(
     private val garageRepository: GarageRepositoryPort,
@@ -16,7 +16,7 @@ class HandleVehicleEntryUseCase(
 
     private val logger = LoggerFactory.getLogger(HandleVehicleEntryUseCase::class.java)
 
-    fun execute(licensePlate: String, entryTime: Instant) {
+    fun execute(licensePlate: String, entryTime: LocalDateTime) {
         logger.info("Processando entrada de veículo: {}", licensePlate)
         val occupiedSpots = garageRepository.getOccupiedSpotsCount()
         val totalSpots = garageRepository.getTotalSpotsCount()

@@ -4,7 +4,7 @@ import com.garagesimulator.application.exception.ParkingSessionNotFoundException
 import com.garagesimulator.application.port.GarageRepositoryPort
 import com.garagesimulator.application.port.ParkingSessionRepositoryPort
 import org.slf4j.LoggerFactory
-import java.time.Instant
+import java.time.LocalDateTime
 
 class HandleVehicleExitUseCase(
     private val parkingSessionRepository: ParkingSessionRepositoryPort,
@@ -13,7 +13,7 @@ class HandleVehicleExitUseCase(
 
     private val logger = LoggerFactory.getLogger(HandleVehicleExitUseCase::class.java)
 
-    fun execute(licensePlate: String, exitTime: Instant) {
+    fun execute(licensePlate: String, exitTime: LocalDateTime) {
         logger.info("Processando saída de veículo: {}", licensePlate)
         val session = parkingSessionRepository.findActiveByPlate(licensePlate)
             ?: run {

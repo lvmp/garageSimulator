@@ -1,12 +1,7 @@
 package com.garagesimulator.infrastructure.persistence.entity
 
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
-import java.time.Instant
+import jakarta.persistence.*
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "parking_sessions")
@@ -21,8 +16,8 @@ data class ParkingSessionEntity(
     @ManyToOne(cascade = [jakarta.persistence.CascadeType.ALL])
     val parkingSpot: ParkingSpotEntity,
 
-    val entryTime: Instant,
-    var exitTime: Instant? = null,
+    val entryTime: LocalDateTime,
+    var exitTime: LocalDateTime? = null,
     val dynamicPricePercentage: Double = 0.0,
     var finalCost: Double? = null,
 )
