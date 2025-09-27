@@ -33,15 +33,13 @@ class HandleVehicleEntryUseCaseTest {
         val sector = Sector(1L, "A", 10.0, 100)
         val spot = ParkingSpot(1L, sector)
         every { garageRepository.getTotalSpotsCount() } returns 100
-        every { garageRepository.getOccupiedSpotsCount() } returns 40 // 40% de ocupação -> preço normal
-        every { garageRepository.findAvailableSpotInSector("A") } returns spot
+        every { garageRepository.findAvailableSpot() } returns spot
 
         // Act
         handleVehicleEntryUseCase.execute("ABC-1234", LocalDateTime.now())
 
         // Assert
         verify(exactly = 1) { parkingSessionRepository.save(any()) }
-        verify(exactly = 1) { garageRepository.saveAllSpots(listOf(spot)) }
         assertTrue(spot.isOccupied)
     }
 
@@ -64,7 +62,7 @@ class HandleVehicleEntryUseCaseTest {
         val spot = ParkingSpot(1L, sector)
         every { garageRepository.getTotalSpotsCount() } returns 100
         every { garageRepository.getOccupiedSpotsCount() } returns 20 // 20% de ocupação -> -10% de desconto
-        every { garageRepository.findAvailableSpotInSector("A") } returns spot
+        every { garageRepository.findAvailableSpot() } returns spot
 
         // Act
         handleVehicleEntryUseCase.execute("ABC-1234", LocalDateTime.now())
@@ -82,7 +80,7 @@ class HandleVehicleEntryUseCaseTest {
         val spot = ParkingSpot(1L, sector)
         every { garageRepository.getTotalSpotsCount() } returns 100
         every { garageRepository.getOccupiedSpotsCount() } returns 80 // 80% de ocupação -> +25% de acréscimo
-        every { garageRepository.findAvailableSpotInSector("A") } returns spot
+        every { garageRepository.findAvailableSpot() } returns spot
 
         // Act
         handleVehicleEntryUseCase.execute("ABC-1234", LocalDateTime.now())

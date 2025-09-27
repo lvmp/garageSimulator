@@ -8,7 +8,7 @@ import com.garagesimulator.domain.model.Sector
  * Define o contrato para obter informações sobre vagas e setores.
  */
 interface GarageRepositoryPort {
-    fun findAvailableSpotInSector(sectorName: String): ParkingSpot?
+    fun findAvailableSpot(): ParkingSpot?
     fun getOccupiedSpotsCount(): Int
     fun getTotalSpotsCount(): Int
     fun saveAllSpots(spots: List<ParkingSpot>): List<ParkingSpot>

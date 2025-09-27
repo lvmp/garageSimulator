@@ -25,7 +25,7 @@ import java.time.LocalDateTime
     ParkingSpotMapper::class,
     SectorMapper::class
 )
-class ParkingSessionRepositoryAdapterTest {
+class ParkingSessionRepositoryGatewayTest {
 
     @Autowired
     private lateinit var entityManager: TestEntityManager
@@ -33,13 +33,25 @@ class ParkingSessionRepositoryAdapterTest {
     @Autowired
     private lateinit var adapter: ParkingSessionRepositoryGateway
 
+    @Autowired
+    private lateinit var sectorMapper: SectorMapper
+
+    @Autowired
+    private lateinit var parkingSpotMapper: ParkingSpotMapper
+
     @Test
     fun `deve encontrar sessao ativa pela placa`() {
         // Arrange
         val sector = Sector(0, "A", 10.0, 10)
-        val spot = ParkingSpot(0, sector, true)
+        val persistedSectorEntity = entityManager.persist(sectorMapper.toEntity(sector))
+        val persistedSector = sectorMapper.toDomain(persistedSectorEntity)
+
+        val spot = ParkingSpot(0, persistedSector, true)
+        val persistedSpotEntity = entityManager.persist(parkingSpotMapper.toEntity(spot))
+        val persistedSpot = parkingSpotMapper.toDomain(persistedSpotEntity)
+
         val vehicle = Vehicle("ACTIVE-001")
-        val session = ParkingSession(0, vehicle, spot, LocalDateTime.now())
+        val session = ParkingSession(0, vehicle, persistedSpot, LocalDateTime.now())
 
         adapter.save(session) // Salva via adapter para garantir que o mapeamento funcione
 

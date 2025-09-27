@@ -30,21 +30,24 @@ class GarageRepositoryGatewayTest {
         // Arrange
         val sectorA = Sector(0, "A", 10.0, 10)
         val sectorB = Sector(0, "B", 15.0, 5)
-        adapter.saveAllSectors(listOf(sectorA, sectorB))
+        val savedSectors = adapter.saveAllSectors(listOf(sectorA, sectorB))
+        val persistedSectorA = savedSectors.first { it.name == "A" }
+        val persistedSectorB = savedSectors.first { it.name == "B" }
 
-        val spot1A = ParkingSpot(0, sectorA, true) // Ocupada
-        val spot2A = ParkingSpot(0, sectorA, false) // Livre
-        val spot1B = ParkingSpot(0, sectorB, true) // Ocupada
+        val spot1A = ParkingSpot(0, persistedSectorA, true) // Ocupada
+        val spot2A = ParkingSpot(0, persistedSectorA, false) // Livre
+        val spot1B = ParkingSpot(0, persistedSectorB, true) // Ocupada
         adapter.saveAllSpots(listOf(spot1A, spot2A, spot1B))
 
         // Act
-        val availableSpot = adapter.findAvailableSpotInSector("A")
+        val availableSpot = adapter.findAvailableSpot()
         val totalSpots = adapter.getTotalSpotsCount()
         val occupiedSpots = adapter.getOccupiedSpotsCount()
 
         // Assert
         assertNotNull(availableSpot)
         assertEquals(false, availableSpot?.isOccupied)
+        assertEquals("A", availableSpot?.sector?.name) // Garante que é a vaga do setor A
         assertEquals(3, totalSpots)
         assertEquals(2, occupiedSpots)
     }

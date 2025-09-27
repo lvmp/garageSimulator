@@ -5,6 +5,7 @@ import com.garagesimulator.application.port.SimulatorClientPort
 import com.garagesimulator.infrastructure.controller.dto.GarageConfigDTO
 import com.garagesimulator.infrastructure.controller.dto.SectorDTO
 import com.garagesimulator.infrastructure.controller.dto.SpotDTO
+import com.garagesimulator.domain.model.Sector
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -32,6 +33,7 @@ class LoadInitialGarageConfigurationUseCaseTest {
             spots = listOf(SpotDTO(1L, "A", -23.0, -46.0))
         )
         every { simulatorClient.getGarageConfiguration() } returns garageConfig
+        every { garageRepository.saveAllSectors(any()) } answers { invocation.args[0] as List<Sector> }
 
         // Act
         useCase.execute()

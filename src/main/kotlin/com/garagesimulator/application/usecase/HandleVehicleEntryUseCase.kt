@@ -34,10 +34,9 @@ class HandleVehicleEntryUseCase(
             else -> 0.25                  // +25% de acréscimo
         }
 
-        // Simplificação: assume que todos os veículos entram no setor "A"
-        val availableSpot = garageRepository.findAvailableSpotInSector("A") ?: run {
-            logger.warn("Nenhuma vaga disponível no setor A para entrada de {}.", licensePlate)
-            throw NoAvailableSpotException("A")
+        val availableSpot = garageRepository.findAvailableSpot() ?: run {
+            logger.warn("Nenhuma vaga disponível para entrada de {}.", licensePlate)
+            throw NoAvailableSpotException()
         }
 
         val vehicle = Vehicle(licensePlate)

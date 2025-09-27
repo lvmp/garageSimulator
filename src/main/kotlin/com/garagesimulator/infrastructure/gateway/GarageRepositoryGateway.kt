@@ -17,8 +17,8 @@ class GarageRepositoryGateway(
     private val sectorMapper: SectorMapper
 ) : GarageRepositoryPort {
 
-    override fun findAvailableSpotInSector(sectorName: String): ParkingSpot? {
-        return spotRepository.findFirstBySectorNameAndIsOccupiedFalse(sectorName)?.let { spotMapper.toDomain(it) }
+    override fun findAvailableSpot(): ParkingSpot? {
+        return spotRepository.findFirstByIsOccupiedFalse()?.let { spotMapper.toDomain(it) }
     }
 
     override fun getOccupiedSpotsCount(): Int {
