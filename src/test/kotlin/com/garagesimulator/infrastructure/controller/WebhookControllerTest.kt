@@ -1,14 +1,13 @@
 package com.garagesimulator.infrastructure.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.kotlinModule
 import com.garagesimulator.application.exception.GarageFullException
-import com.garagesimulator.application.exception.NoAvailableSpotException
 import com.garagesimulator.application.exception.ParkingSessionNotFoundException
 import com.garagesimulator.application.usecase.HandleVehicleEntryUseCase
 import com.garagesimulator.application.usecase.HandleVehicleExitUseCase
 import com.garagesimulator.infrastructure.controller.dto.WebhookEventDTO
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.kotlinModule
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -19,7 +18,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import java.time.Instant
+import java.time.LocalDateTime
 
 class WebhookControllerTest {
 
@@ -38,7 +37,7 @@ class WebhookControllerTest {
         // Arrange
         val event = WebhookEventDTO(
             license_plate = "ABC-1234",
-            entry_time = Instant.now(),
+            entry_time = LocalDateTime.now(),
             event_type = "ENTRY"
         )
 
@@ -56,7 +55,7 @@ class WebhookControllerTest {
         // Arrange
         val event = WebhookEventDTO(
             license_plate = "ABC-1234",
-            exit_time = Instant.now(),
+            exit_time = LocalDateTime.now(),
             event_type = "EXIT"
         )
 
@@ -74,7 +73,7 @@ class WebhookControllerTest {
         // Arrange
         val event = WebhookEventDTO(
             license_plate = "ABC-1234",
-            entry_time = Instant.now(),
+            entry_time = LocalDateTime.now(),
             event_type = "ENTRY"
         )
         every { handleVehicleEntryUseCase.execute(any(), any()) } throws GarageFullException()
@@ -91,7 +90,7 @@ class WebhookControllerTest {
         // Arrange
         val event = WebhookEventDTO(
             license_plate = "ABC-1234",
-            exit_time = Instant.now(),
+            exit_time = LocalDateTime.now(),
             event_type = "EXIT"
         )
         every { handleVehicleExitUseCase.execute(any(), any()) } throws ParkingSessionNotFoundException("ABC-1234")

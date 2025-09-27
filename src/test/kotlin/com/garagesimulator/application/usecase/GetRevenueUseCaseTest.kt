@@ -7,11 +7,11 @@ import com.garagesimulator.domain.model.Sector
 import com.garagesimulator.domain.model.Vehicle
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 class GetRevenueUseCaseTest {
 
@@ -61,6 +61,6 @@ class GetRevenueUseCaseTest {
         val sector = Sector(1L, "A", 10.0, 100)
         val spot = ParkingSpot(1L, sector)
         val vehicle = Vehicle("MOCK-001")
-        return ParkingSession(1L, vehicle, spot, Instant.now(), finalCost = cost)
+        return ParkingSession(1L, vehicle, spot, LocalDateTime.now(), finalCost = cost)
     }
 }

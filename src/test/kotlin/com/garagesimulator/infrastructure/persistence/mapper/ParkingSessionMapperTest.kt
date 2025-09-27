@@ -12,7 +12,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.time.Instant
+import java.time.LocalDateTime
 
 class ParkingSessionMapperTest {
 
@@ -28,8 +28,8 @@ class ParkingSessionMapperTest {
         val sectorDomain = Sector(1L, "A", 10.0, 100)
         val spotDomain = ParkingSpot(1L, sectorDomain, true)
         val spotEntity = ParkingSpotEntity(1L, SectorEntity(1L, "A", 10.0, 100), true)
-        val entryTime = Instant.now()
-        val exitTime = Instant.now().plusSeconds(3600)
+        val entryTime = LocalDateTime.now()
+        val exitTime = LocalDateTime.now().plusSeconds(3600)
         val domain = ParkingSession(1L, vehicleDomain, spotDomain, entryTime, exitTime, 0.1, 11.0)
 
         every { vehicleMapper.toEntity(vehicleDomain) } returns vehicleEntity
@@ -56,8 +56,8 @@ class ParkingSessionMapperTest {
         val sectorEntity = SectorEntity(1L, "A", 10.0, 100)
         val spotEntity = ParkingSpotEntity(1L, sectorEntity, true)
         val spotDomain = ParkingSpot(1L, Sector(1L, "A", 10.0, 100), true)
-        val entryTime = Instant.now()
-        val exitTime = Instant.now().plusSeconds(3600)
+        val entryTime = LocalDateTime.now()
+        val exitTime = LocalDateTime.now().plusSeconds(3600)
         val entity = ParkingSessionEntity(1L, vehicleEntity, spotEntity, entryTime, exitTime, 0.1, 11.0)
 
         every { vehicleMapper.toDomain(vehicleEntity) } returns vehicleDomain

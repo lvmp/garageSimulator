@@ -8,11 +8,11 @@ import com.garagesimulator.domain.model.Sector
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.time.Instant
+import java.time.LocalDateTime
 
 class HandleVehicleEntryUseCaseTest {
 
@@ -37,7 +37,7 @@ class HandleVehicleEntryUseCaseTest {
         every { garageRepository.findAvailableSpotInSector("A") } returns spot
 
         // Act
-        handleVehicleEntryUseCase.execute("ABC-1234", Instant.now())
+        handleVehicleEntryUseCase.execute("ABC-1234", LocalDateTime.now())
 
         // Assert
         verify(exactly = 1) { parkingSessionRepository.save(any()) }
@@ -53,7 +53,7 @@ class HandleVehicleEntryUseCaseTest {
 
         // Act & Assert
         assertThrows<GarageFullException> {
-            handleVehicleEntryUseCase.execute("ABC-1234", Instant.now())
+            handleVehicleEntryUseCase.execute("ABC-1234", LocalDateTime.now())
         }
     }
 
@@ -67,7 +67,7 @@ class HandleVehicleEntryUseCaseTest {
         every { garageRepository.findAvailableSpotInSector("A") } returns spot
 
         // Act
-        handleVehicleEntryUseCase.execute("ABC-1234", Instant.now())
+        handleVehicleEntryUseCase.execute("ABC-1234", LocalDateTime.now())
 
         // Assert
         verify {
@@ -85,7 +85,7 @@ class HandleVehicleEntryUseCaseTest {
         every { garageRepository.findAvailableSpotInSector("A") } returns spot
 
         // Act
-        handleVehicleEntryUseCase.execute("ABC-1234", Instant.now())
+        handleVehicleEntryUseCase.execute("ABC-1234", LocalDateTime.now())
 
         // Assert
         verify {

@@ -10,11 +10,12 @@ import com.garagesimulator.domain.model.Vehicle
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.time.Instant
+import java.time.LocalDateTime
 
 class HandleVehicleExitUseCaseTest {
 
@@ -32,7 +33,7 @@ class HandleVehicleExitUseCaseTest {
     @Test
     fun `deve finalizar sessao com sucesso`() {
         // Arrange
-        val entryTime = Instant.now().minusSeconds(3600) // 1 hour ago
+        val entryTime = LocalDateTime.now().minusSeconds(3600) // 1 hour ago
         val sector = Sector(1L, "A", 10.0, 100)
         val spot = ParkingSpot(1L, sector, isOccupied = true)
         val vehicle = Vehicle("EXIT-001")
@@ -41,7 +42,7 @@ class HandleVehicleExitUseCaseTest {
         every { parkingSessionRepository.findActiveByPlate("EXIT-001") } returns activeSession
 
         // Act
-        val exitTime = Instant.now()
+        val exitTime = LocalDateTime.now()
         handleVehicleExitUseCase.execute("EXIT-001", exitTime)
 
         // Assert
@@ -60,7 +61,7 @@ class HandleVehicleExitUseCaseTest {
 
         // Act & Assert
         assertThrows<ParkingSessionNotFoundException> {
-            handleVehicleExitUseCase.execute("NOT-FOUND", Instant.now())
+            handleVehicleExitUseCase.execute("NOT-FOUND", LocalDateTime.now())
         }
     }
 }
