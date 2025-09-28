@@ -29,8 +29,8 @@ class LoadInitialGarageConfigurationUseCaseTest {
     fun `deve carregar e persistir configuracao da garagem com sucesso`() {
         // Arrange
         val garageConfig = GarageConfigDTO(
-            garage = listOf(SectorDTO("A", 10.0, 100)),
-            spots = listOf(SpotDTO(1L, "A", -23.0, -46.0))
+            garage = listOf(SectorDTO("A", 40.5, 10, "00:00", "23:59", 1440)),
+            spots = listOf(SpotDTO(1L, "A", -23.0, -46.0, false))
         )
         every { simulatorClient.getGarageConfiguration() } returns garageConfig
         every { garageRepository.saveAllSectors(any()) } answers { invocation.args[0] as List<Sector> }

@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import
+import java.math.BigDecimal
+import java.time.LocalTime
 
 @DataJpaTest
 @Import(
@@ -28,15 +30,15 @@ class GarageRepositoryGatewayTest {
     @Test
     fun `deve salvar e encontrar vaga disponivel`() {
         // Arrange
-        val sectorA = Sector(0, "A", 10.0, 10)
-        val sectorB = Sector(0, "B", 15.0, 5)
+        val sectorA = Sector(0, "A", BigDecimal("10.0"), 10, LocalTime.MIN, LocalTime.MAX, 1440)
+        val sectorB = Sector(0, "B", BigDecimal("15.0"), 5, LocalTime.MIN, LocalTime.MAX, 1440)
         val savedSectors = adapter.saveAllSectors(listOf(sectorA, sectorB))
         val persistedSectorA = savedSectors.first { it.name == "A" }
         val persistedSectorB = savedSectors.first { it.name == "B" }
 
-        val spot1A = ParkingSpot(0, persistedSectorA, true) // Ocupada
-        val spot2A = ParkingSpot(0, persistedSectorA, false) // Livre
-        val spot1B = ParkingSpot(0, persistedSectorB, true) // Ocupada
+        val spot1A = ParkingSpot(0, persistedSectorA, true, -23.0, -46.0) // Ocupada
+        val spot2A = ParkingSpot(0, persistedSectorA, false, -23.0, -46.0) // Livre
+        val spot1B = ParkingSpot(0, persistedSectorB, true, -23.0, -46.0) // Ocupada
         adapter.saveAllSpots(listOf(spot1A, spot2A, spot1B))
 
         // Act

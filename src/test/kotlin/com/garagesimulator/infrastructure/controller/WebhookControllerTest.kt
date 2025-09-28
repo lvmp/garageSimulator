@@ -38,6 +38,8 @@ class WebhookControllerTest {
         val event = WebhookEventDTO(
             license_plate = "ABC-1234",
             entry_time = LocalDateTime.now(),
+            lat = -23.0,
+            lng = -46.0,
             event_type = "ENTRY"
         )
 
@@ -47,7 +49,7 @@ class WebhookControllerTest {
             .content(objectMapper.writeValueAsString(event)))
             .andExpect(status().isOk)
 
-        verify(exactly = 1) { handleVehicleEntryUseCase.execute(event.license_plate, event.entry_time!!) }
+        verify(exactly = 1) { handleVehicleEntryUseCase.execute(event.license_plate, event.entry_time!!, event.lat!!, event.lng!!) }
     }
 
     @Test
@@ -74,9 +76,11 @@ class WebhookControllerTest {
         val event = WebhookEventDTO(
             license_plate = "ABC-1234",
             entry_time = LocalDateTime.now(),
+            lat = -23.0,
+            lng = -46.0,
             event_type = "ENTRY"
         )
-        every { handleVehicleEntryUseCase.execute(any(), any()) } throws GarageFullException()
+        every { handleVehicleEntryUseCase.execute(any(), any(), any(), any()) } throws GarageFullException()
 
         // Act & Assert
         mockMvc.perform(post("/webhook")

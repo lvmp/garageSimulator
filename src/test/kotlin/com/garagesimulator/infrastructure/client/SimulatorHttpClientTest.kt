@@ -26,8 +26,8 @@ class SimulatorHttpClientTest {
     fun `deve obter configuracao da garagem com sucesso`() {
         // Arrange
         val expectedGarageConfig = GarageConfigDTO(
-            garage = listOf(SectorDTO("A", 10.0, 100)),
-            spots = listOf(SpotDTO(1L, "A", -23.0, -46.0))
+            garage = listOf(SectorDTO("A", 40.5, 10, "00:00", "23:59", 1440)),
+            spots = listOf(SpotDTO(1L, "A", -23.561684, -46.655981, false))
         )
 
         every { restClient.get().uri(any<String>()).retrieve().body(GarageConfigDTO::class.java) } returns expectedGarageConfig

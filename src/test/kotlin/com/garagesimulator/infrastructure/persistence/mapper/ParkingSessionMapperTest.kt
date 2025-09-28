@@ -12,7 +12,9 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 class ParkingSessionMapperTest {
 
@@ -25,12 +27,13 @@ class ParkingSessionMapperTest {
         // Arrange
         val vehicleDomain = Vehicle("ABC-123")
         val vehicleEntity = VehicleEntity("ABC-123")
-        val sectorDomain = Sector(1L, "A", 10.0, 100)
-        val spotDomain = ParkingSpot(1L, sectorDomain, true)
-        val spotEntity = ParkingSpotEntity(1L, SectorEntity(1L, "A", 10.0, 100), true)
+        val sectorDomain = Sector(1L, "A", BigDecimal("10.0"), 100, LocalTime.MIN, LocalTime.MAX, 1440)
+        val spotDomain = ParkingSpot(1L, sectorDomain, true, -23.0, -46.0)
+        val sectorEntity = SectorEntity(1L, "A", BigDecimal("10.0"), 100, LocalTime.MIN, LocalTime.MAX, 1440)
+        val spotEntity = ParkingSpotEntity(1L, sectorEntity, true, -23.0, -46.0)
         val entryTime = LocalDateTime.now()
         val exitTime = LocalDateTime.now().plusSeconds(3600)
-        val domain = ParkingSession(1L, vehicleDomain, spotDomain, entryTime, exitTime, 0.1, 11.0)
+        val domain = ParkingSession(1L, vehicleDomain, spotDomain, entryTime, exitTime, BigDecimal("0.1"), BigDecimal("11.0"))
 
         every { vehicleMapper.toEntity(vehicleDomain) } returns vehicleEntity
         every { parkingSpotMapper.toEntity(spotDomain) } returns spotEntity
@@ -53,12 +56,13 @@ class ParkingSessionMapperTest {
         // Arrange
         val vehicleEntity = VehicleEntity("ABC-123")
         val vehicleDomain = Vehicle("ABC-123")
-        val sectorEntity = SectorEntity(1L, "A", 10.0, 100)
-        val spotEntity = ParkingSpotEntity(1L, sectorEntity, true)
-        val spotDomain = ParkingSpot(1L, Sector(1L, "A", 10.0, 100), true)
+        val sectorEntity = SectorEntity(1L, "A", BigDecimal("10.0"), 100, LocalTime.MIN, LocalTime.MAX, 1440)
+        val spotEntity = ParkingSpotEntity(1L, sectorEntity, true, -23.0, -46.0)
+        val sectorDomain = Sector(1L, "A", BigDecimal("10.0"), 100, LocalTime.MIN, LocalTime.MAX, 1440)
+        val spotDomain = ParkingSpot(1L, sectorDomain, true, -23.0, -46.0)
         val entryTime = LocalDateTime.now()
         val exitTime = LocalDateTime.now().plusSeconds(3600)
-        val entity = ParkingSessionEntity(1L, vehicleEntity, spotEntity, entryTime, exitTime, 0.1, 11.0)
+        val entity = ParkingSessionEntity(1L, vehicleEntity, spotEntity, entryTime, exitTime, BigDecimal("0.1"), BigDecimal("11.0"))
 
         every { vehicleMapper.toDomain(vehicleEntity) } returns vehicleDomain
         every { parkingSpotMapper.toDomain(spotEntity) } returns spotDomain

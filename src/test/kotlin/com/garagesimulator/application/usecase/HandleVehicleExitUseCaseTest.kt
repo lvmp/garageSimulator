@@ -15,7 +15,9 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 class HandleVehicleExitUseCaseTest {
 
@@ -27,6 +29,7 @@ class HandleVehicleExitUseCaseTest {
     fun setUp() {
         parkingSessionRepository = mockk(relaxed = true)
         garageRepository = mockk(relaxed = true)
+        every { garageRepository.saveSpot(any()) } answers { invocation.args[0] as ParkingSpot }
         handleVehicleExitUseCase = HandleVehicleExitUseCase(parkingSessionRepository, garageRepository)
     }
 
@@ -34,8 +37,8 @@ class HandleVehicleExitUseCaseTest {
     fun `deve finalizar sessao com sucesso`() {
         // Arrange
         val entryTime = LocalDateTime.now().minusSeconds(3600) // 1 hour ago
-        val sector = Sector(1L, "A", 10.0, 100)
-        val spot = ParkingSpot(1L, sector, isOccupied = true)
+        val sector = Sector(1L, "A", BigDecimal("10.0"), 100, LocalTime.MIN, LocalTime.MAX, 1440)
+        val spot = ParkingSpot(1L, sector, isOccupied = true, latitude = -23.0, longitude = -46.0)
         val vehicle = Vehicle("EXIT-001")
         val activeSession = ParkingSession(1L, vehicle, spot, entryTime)
 
@@ -51,7 +54,7 @@ class HandleVehicleExitUseCaseTest {
         assertFalse(spot.isOccupied)
 
         verify(exactly = 1) { parkingSessionRepository.save(activeSession) }
-        verify(exactly = 1) { garageRepository.saveAllSpots(listOf(spot)) }
+        verify(exactly = 1) { garageRepository.saveSpot(spot) }
     }
 
     @Test

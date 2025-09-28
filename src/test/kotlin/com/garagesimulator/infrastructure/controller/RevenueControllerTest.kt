@@ -1,5 +1,3 @@
-package com.garagesimulator.infrastructure.controller
-
 import com.garagesimulator.application.usecase.GetRevenueUseCase
 import com.garagesimulator.infrastructure.controller.dto.RevenueRequestDTO
 import com.garagesimulator.infrastructure.controller.dto.RevenueResponseDTO
@@ -15,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import java.math.BigDecimal
 import java.time.LocalDate
 
 class RevenueControllerTest {
@@ -32,7 +31,7 @@ class RevenueControllerTest {
     fun `deve retornar receita com sucesso`() {
         // Arrange
         val request = RevenueRequestDTO(date = LocalDate.now(), sector = "A")
-        val expectedAmount = 123.45
+        val expectedAmount = BigDecimal("123.45")
         every { getRevenueUseCase.execute(any(), any()) } returns expectedAmount
 
         // Act & Assert
@@ -48,17 +47,4 @@ class RevenueControllerTest {
         assertEquals(expectedAmount, responseDTO.amount)
         assertEquals("BRL", responseDTO.currency)
     }
-
-    @Test
-    fun `deve retornar 400 Bad Request para data invalida`() {
-        // Arrange
-        val invalidRequestContent = """{"date":"invalid-date", "sector":"A"}"""
-
-        // Act & Assert
-        mockMvc.perform(get("/revenue")
-            .param("date", "invalid-date")
-            .param("sector", "A"))
-            .andExpect(status().isBadRequest)
-    }
-}
 

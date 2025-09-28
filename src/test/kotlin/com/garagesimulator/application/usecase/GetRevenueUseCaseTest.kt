@@ -10,8 +10,10 @@ import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 class GetRevenueUseCaseTest {
 
@@ -30,9 +32,9 @@ class GetRevenueUseCaseTest {
         val date = LocalDate.now()
         val sectorName = "A"
         val sessions = listOf(
-            createMockSession(10.0),
-            createMockSession(15.5),
-            createMockSession(20.0)
+            createMockSession(BigDecimal("10.0")),
+            createMockSession(BigDecimal("15.5")),
+            createMockSession(BigDecimal("20.0"))
         )
         every { parkingSessionRepository.findFinishedByDateAndSector(date, sectorName) } returns sessions
 
@@ -40,7 +42,7 @@ class GetRevenueUseCaseTest {
         val totalRevenue = getRevenueUseCase.execute(date, sectorName)
 
         // Assert
-        assertEquals(45.5, totalRevenue)
+        assertEquals(BigDecimal("45.5"), totalRevenue)
     }
 
     @Test
@@ -54,12 +56,12 @@ class GetRevenueUseCaseTest {
         val totalRevenue = getRevenueUseCase.execute(date, sectorName)
 
         // Assert
-        assertEquals(0.0, totalRevenue)
+        assertEquals(BigDecimal.ZERO, totalRevenue)
     }
 
-    private fun createMockSession(cost: Double): ParkingSession {
-        val sector = Sector(1L, "A", 10.0, 100)
-        val spot = ParkingSpot(1L, sector)
+    private fun createMockSession(cost: BigDecimal): ParkingSession {
+        val sector = Sector(1L, "A", BigDecimal("10.0"), 100, LocalTime.MIN, LocalTime.MAX, 1440)
+        val spot = ParkingSpot(1L, sector, false, -23.0, -46.0)
         val vehicle = Vehicle("MOCK-001")
         return ParkingSession(1L, vehicle, spot, LocalDateTime.now(), finalCost = cost)
     }

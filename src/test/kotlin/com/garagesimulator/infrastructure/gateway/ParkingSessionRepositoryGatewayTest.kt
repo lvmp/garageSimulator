@@ -42,11 +42,11 @@ class ParkingSessionRepositoryGatewayTest {
     @Test
     fun `deve encontrar sessao ativa pela placa`() {
         // Arrange
-        val sector = Sector(0, "A", 10.0, 10)
+        val sector = Sector(0, "A", BigDecimal("10.0"), 10, LocalTime.MIN, LocalTime.MAX, 1440)
         val persistedSectorEntity = entityManager.persist(sectorMapper.toEntity(sector))
         val persistedSector = sectorMapper.toDomain(persistedSectorEntity)
 
-        val spot = ParkingSpot(0, persistedSector, true)
+        val spot = ParkingSpot(0, persistedSector, true, -23.0, -46.0)
         val persistedSpotEntity = entityManager.persist(parkingSpotMapper.toEntity(spot))
         val persistedSpot = parkingSpotMapper.toDomain(persistedSpotEntity)
 

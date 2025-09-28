@@ -12,7 +12,9 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 class HandleVehicleEntryUseCaseTest {
 
@@ -31,13 +33,13 @@ class HandleVehicleEntryUseCaseTest {
     @Test
     fun `deve permitir entrada e criar sessao com sucesso`() {
         // Arrange
-        val sector = Sector(1L, "A", 10.0, 100)
-        val spot = ParkingSpot(1L, sector)
+        val sector = Sector(1L, "A", BigDecimal("10.0"), 100, LocalTime.MIN, LocalTime.MAX, 1440)
+        val spot = ParkingSpot(1L, sector, false, -23.0, -46.0)
         every { garageRepository.getTotalSpotsCount() } returns 100
-        every { garageRepository.findAvailableSpot() } returns spot
+        every { garageRepository.findSpotByCoordinates(any(), any()) } returns spot
 
         // Act
-        handleVehicleEntryUseCase.execute("ABC-1234", LocalDateTime.now())
+        handleVehicleEntryUseCase.execute("ABC-1234", LocalDateTime.now(), -23.0, -46.0)
 
         // Assert
         verify(exactly = 1) { parkingSessionRepository.save(any()) }
@@ -52,43 +54,43 @@ class HandleVehicleEntryUseCaseTest {
 
         // Act & Assert
         assertThrows<GarageFullException> {
-            handleVehicleEntryUseCase.execute("ABC-1234", LocalDateTime.now())
+            handleVehicleEntryUseCase.execute("ABC-1234", LocalDateTime.now(), -23.0, -46.0)
         }
     }
 
     @Test
     fun `deve calcular preco com desconto para baixa ocupacao`() {
         // Arrange
-        val sector = Sector(1L, "A", 10.0, 100)
-        val spot = ParkingSpot(1L, sector)
+        val sector = Sector(1L, "A", BigDecimal("10.0"), 100, LocalTime.MIN, LocalTime.MAX, 1440)
+        val spot = ParkingSpot(1L, sector, false, -23.0, -46.0)
         every { garageRepository.getTotalSpotsCount() } returns 100
         every { garageRepository.getOccupiedSpotsCount() } returns 20 // 20% de ocupação -> -10% de desconto
-        every { garageRepository.findAvailableSpot() } returns spot
+        every { garageRepository.findSpotByCoordinates(any(), any()) } returns spot
 
         // Act
-        handleVehicleEntryUseCase.execute("ABC-1234", LocalDateTime.now())
+        handleVehicleEntryUseCase.execute("ABC-1234", LocalDateTime.now(), -23.0, -46.0)
 
         // Assert
         verify {
-            parkingSessionRepository.save(match { it.dynamicPricePercentage == -0.10 })
+            parkingSessionRepository.save(match { it.dynamicPricePercentage == BigDecimal("-0.10") })
         }
     }
 
     @Test
     fun `deve calcular preco com acrescimo para alta ocupacao`() {
         // Arrange
-        val sector = Sector(1L, "A", 10.0, 100)
-        val spot = ParkingSpot(1L, sector)
+        val sector = Sector(1L, "A", BigDecimal("10.0"), 100, LocalTime.MIN, LocalTime.MAX, 1440)
+        val spot = ParkingSpot(1L, sector, false, -23.0, -46.0)
         every { garageRepository.getTotalSpotsCount() } returns 100
         every { garageRepository.getOccupiedSpotsCount() } returns 80 // 80% de ocupação -> +25% de acréscimo
-        every { garageRepository.findAvailableSpot() } returns spot
+        every { garageRepository.findSpotByCoordinates(any(), any()) } returns spot
 
         // Act
-        handleVehicleEntryUseCase.execute("ABC-1234", LocalDateTime.now())
+        handleVehicleEntryUseCase.execute("ABC-1234", LocalDateTime.now(), -23.0, -46.0)
 
         // Assert
         verify {
-            parkingSessionRepository.save(match { it.dynamicPricePercentage == 0.25 })
+            parkingSessionRepository.save(match { it.dynamicPricePercentage == BigDecimal("0.25") })
         }
     }
 }
