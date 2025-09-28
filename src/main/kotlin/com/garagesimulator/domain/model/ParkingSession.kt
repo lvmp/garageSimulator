@@ -1,6 +1,7 @@
 package com.garagesimulator.domain.model
 
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.Duration
 import java.time.LocalDateTime
 import kotlin.math.ceil
@@ -17,16 +18,15 @@ data class ParkingSession(
     val entryTime: LocalDateTime,
     var exitTime: LocalDateTime? = null,
     val dynamicPricePercentage: BigDecimal? = BigDecimal.ZERO, // Ex: 0.1 para +10%, -0.1 para -10%
-    var finalCost: BigDecimal? = BigDecimal.ZERO,
+    var finalCost: BigDecimal? = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP),
 ) {
-
     fun calculateCost() {
         check(exitTime != null) { "O custo só pode ser calculado após a saída do veículo." }
 
         val durationInMinutes = Duration.between(entryTime, exitTime).toMinutes()
 
         if (durationInMinutes <= 30) {
-            finalCost = BigDecimal.ZERO
+            finalCost = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP)
             return
         }
 
@@ -34,6 +34,6 @@ data class ParkingSession(
         val baseCost = parkingSpot.sector.basePrice.multiply(BigDecimal(hours))
         val adjustedCost = baseCost.multiply(BigDecimal.ONE.add(dynamicPricePercentage))
 
-        finalCost = adjustedCost
+        finalCost = adjustedCost.setScale(2, RoundingMode.HALF_UP)
     }
 }

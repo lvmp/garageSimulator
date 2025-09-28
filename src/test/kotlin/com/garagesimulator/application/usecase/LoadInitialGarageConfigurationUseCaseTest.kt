@@ -33,12 +33,16 @@ class LoadInitialGarageConfigurationUseCaseTest {
             spots = listOf(SpotDTO(1L, "A", -23.0, -46.0, false))
         )
         every { simulatorClient.getGarageConfiguration() } returns garageConfig
+        every { garageRepository.findSpotByCoordinates(any(), any()) } returns null
         every { garageRepository.saveAllSectors(any()) } answers { invocation.args[0] as List<Sector> }
+
 
         // Act
         useCase.execute()
 
         // Assert
+        verify(exactly = 1) { garageRepository.findAllSectors() }
+        verify(exactly = 1) { garageRepository.findSpotByCoordinates(any(),any()) }
         verify(exactly = 1) { garageRepository.saveAllSectors(any()) }
         verify(exactly = 1) { garageRepository.saveAllSpots(any()) }
     }

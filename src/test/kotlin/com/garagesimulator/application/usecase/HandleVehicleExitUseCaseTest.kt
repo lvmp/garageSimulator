@@ -54,7 +54,7 @@ class HandleVehicleExitUseCaseTest {
         assertFalse(spot.isOccupied)
 
         verify(exactly = 1) { parkingSessionRepository.save(activeSession) }
-        verify(exactly = 1) { garageRepository.saveSpot(spot) }
+        verify(exactly = 1) { garageRepository.saveAllSpots(listOf(spot)) }
     }
 
     @Test

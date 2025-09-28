@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.LocalDateTime
 import java.time.LocalTime
 
@@ -43,7 +44,7 @@ class ParkingSessionTest {
         session.calculateCost()
 
         // Assert
-        assertEquals(BigDecimal.ZERO, session.finalCost)
+        assertEquals(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP), session.finalCost)
     }
 
     @Test
@@ -57,7 +58,7 @@ class ParkingSessionTest {
         session.calculateCost()
 
         // Assert
-        assertEquals(BigDecimal("10.0"), session.finalCost) // 1 * basePrice
+        assertEquals(BigDecimal("10.00"), session.finalCost) // 1 * basePrice
     }
 
     @Test
@@ -71,7 +72,7 @@ class ParkingSessionTest {
         session.calculateCost()
 
         // Assert
-        assertEquals(BigDecimal("30.0"), session.finalCost) // 3 * basePrice
+        assertEquals(BigDecimal("30.00"), session.finalCost) // 3 * basePrice
     }
 
     @Test
@@ -85,7 +86,7 @@ class ParkingSessionTest {
         session.calculateCost()
 
         // Assert
-        assertEquals(BigDecimal("9.0"), session.finalCost) // 10.0 * (1 - 0.10)
+        assertEquals(BigDecimal("9.00"), session.finalCost) // 10.0 * (1 - 0.10)
     }
 
     @Test
@@ -99,6 +100,6 @@ class ParkingSessionTest {
         session.calculateCost()
 
         // Assert
-        assertEquals(BigDecimal("12.5"), session.finalCost) // 10.0 * (1 + 0.25)
+        assertEquals(BigDecimal("12.50"), session.finalCost) // 10.0 * (1 + 0.25)
     }
 }

@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
 import org.springframework.context.annotation.Import
+import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 @DataJpaTest
 @Import(

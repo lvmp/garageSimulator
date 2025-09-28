@@ -1,9 +1,11 @@
-import com.garagesimulator.application.usecase.GetRevenueUseCase
+package com.garagesimulator.infrastructure.controller
+
 import com.garagesimulator.infrastructure.controller.dto.RevenueRequestDTO
 import com.garagesimulator.infrastructure.controller.dto.RevenueResponseDTO
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.kotlinModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.garagesimulator.application.usecase.GetRevenueUseCase
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -35,9 +37,11 @@ class RevenueControllerTest {
         every { getRevenueUseCase.execute(any(), any()) } returns expectedAmount
 
         // Act & Assert
-        val result = mockMvc.perform(get("/revenue")
-            .param("date", request.date.toString())
-            .param("sector", request.sector))
+        val result = mockMvc.perform(
+            get("/revenue")
+                .param("date", request.date.toString())
+                .param("sector", request.sector)
+        )
             .andExpect(status().isOk)
             .andReturn()
 
@@ -47,4 +51,5 @@ class RevenueControllerTest {
         assertEquals(expectedAmount, responseDTO.amount)
         assertEquals("BRL", responseDTO.currency)
     }
+}
 

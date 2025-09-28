@@ -36,7 +36,7 @@ class HandleVehicleEntryUseCaseTest {
         val sector = Sector(1L, "A", BigDecimal("10.0"), 100, LocalTime.MIN, LocalTime.MAX, 1440)
         val spot = ParkingSpot(1L, sector, false, -23.0, -46.0)
         every { garageRepository.getTotalSpotsCount() } returns 100
-        every { garageRepository.findSpotByCoordinates(any(), any()) } returns spot
+        every {garageRepository.findAvailableSpot() } returns spot
 
         // Act
         handleVehicleEntryUseCase.execute("ABC-1234", LocalDateTime.now(), -23.0, -46.0)
