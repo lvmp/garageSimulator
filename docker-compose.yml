@@ -16,6 +16,8 @@ services:
       timeout: 20s
       retries: 10
       start_period: 10s
+    networks:
+      - garage-network
 
   garage-app:
     container_name: garage-simulator-app
@@ -40,14 +42,22 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
+    networks:
+      - garage-network
 
   garage-event-simulator:
     image: cfontes0estapar/garage-sim:1.0.0
     container_name: garage-event-simulator
     extra_hosts:
-      - "localhost:garage-app"
+      - "localhost:host-gateway"
     ports:
       - "3000:3000"
+    networks:
+      - garage-network
+
+networks:
+  garage-network:
+    driver: bridge
 
 volumes:
   mysql_data:
