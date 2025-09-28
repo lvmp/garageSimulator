@@ -47,4 +47,8 @@ class GarageRepositoryGateway(
     override fun findSpotByCoordinates(latitude: Double, longitude: Double): ParkingSpot? {
         return spotRepository.findByLatitudeAndLongitude(latitude, longitude)?.let { spotMapper.toDomain(it) }
     }
+
+    override fun findAllSectors(): List<Sector> {
+        return sectorRepository.findAll().toList().map { sectorMapper.toDomain(it) }
+    }
 }
