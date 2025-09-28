@@ -3,6 +3,7 @@ package com.garagesimulator.infrastructure.mapper
 import com.garagesimulator.domain.model.ParkingSession
 import com.garagesimulator.infrastructure.persistence.entity.ParkingSessionEntity
 import org.springframework.stereotype.Component
+import java.math.BigDecimal
 
 @Component
 class ParkingSessionMapper(
@@ -25,6 +26,6 @@ class ParkingSessionMapper(
         entryTime = entity.entryTime,
         exitTime = entity.exitTime,
         dynamicPricePercentage = entity.dynamicPricePercentage,
-        finalCost = entity.finalCost
+        finalCost =  entity.finalCost
     )
 }

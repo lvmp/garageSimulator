@@ -6,6 +6,9 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 
+import java.math.BigDecimal
+import java.time.LocalTime
+
 @Entity
 @Table(name = "sectors")
 data class SectorEntity(
@@ -13,6 +16,9 @@ data class SectorEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
     val name: String,
-    val basePrice: Double,
+    val basePrice: BigDecimal,
     val maxCapacity: Int,
+    val openHour: LocalTime,
+    val closeHour: LocalTime,
+    val durationLimitMinutes: Int,
 )

@@ -29,13 +29,13 @@ class WebhookController(
         return try {
             when (event.event_type) {
                 "ENTRY" -> {
-                    event.entry_time?.let { entryTime ->
-                        handleVehicleEntryUseCase.execute(event.license_plate, entryTime)
+                    if (event.entry_time == null ) {
+                        logger.warn("entry_time, é obrigatório para evento ENTRY da placa {}.", event.license_plate)
+                        ResponseEntity.badRequest().body("entry_time, lat, e lng são obrigatórios para evento ENTRY.")
+                    } else {
+                        handleVehicleEntryUseCase.execute(licensePlate =  event.license_plate, entryTime =  event.entry_time, latitude = event.lat, longitude = event.lng)
                         logger.info("Evento ENTRY processado com sucesso para placa {}.", event.license_plate)
                         ResponseEntity.ok("Evento ENTRY processado com sucesso.")
-                    } ?: run {
-                        logger.warn("entry_time é obrigatório para evento ENTRY da placa {}.", event.license_plate)
-                        ResponseEntity.badRequest().body("entry_time é obrigatório para evento ENTRY.")
                     }
                 }
                 "EXIT" -> {

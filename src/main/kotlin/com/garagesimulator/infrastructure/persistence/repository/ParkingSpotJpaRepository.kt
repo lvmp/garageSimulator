@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository
 interface ParkingSpotJpaRepository : JpaRepository<ParkingSpotEntity, Long> {
 
     fun findFirstByIsOccupiedFalse(): ParkingSpotEntity?
+    fun findByLatitudeAndLongitude(latitude: Double, longitude: Double): ParkingSpotEntity?
 }

@@ -9,6 +9,8 @@ data class ParkingSpot(
     val id: Long,
     val sector: Sector,
     var isOccupied: Boolean = false,
+    val latitude: Double,
+    val longitude: Double,
 ) {
     fun occupy() {
         check(!isOccupied) { "A vaga já está ocupada." }

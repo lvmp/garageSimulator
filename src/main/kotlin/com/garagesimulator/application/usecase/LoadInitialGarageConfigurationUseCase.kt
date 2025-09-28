@@ -6,6 +6,8 @@ import com.garagesimulator.domain.model.ParkingSpot
 import com.garagesimulator.domain.model.Sector
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import java.math.BigDecimal
+import java.time.LocalTime
 
 @Component
 class LoadInitialGarageConfigurationUseCase(
@@ -21,14 +23,31 @@ class LoadInitialGarageConfigurationUseCase(
             val garageConfig = simulatorClient.getGarageConfiguration()
 
             val sectors = garageConfig.garage.map { dto ->
-                Sector(id = 0, name = dto.sector, basePrice = dto.basePrice, maxCapacity = dto.max_capacity)
+                garageRepository.
+
+                Sector(
+                    id = 0,
+                    name = dto.sector,
+                    basePrice = BigDecimal(dto.base_price.toString()),
+                    maxCapacity = dto.max_capacity,
+                    openHour = LocalTime.parse(dto.open_hour),
+                    closeHour = LocalTime.parse(dto.close_hour),
+                    durationLimitMinutes = dto.duration_limit_minutes
+                )
             }
+
             val savedSectors = garageRepository.saveAllSectors(sectors)
             logger.info("{} setores carregados e persistidos.", savedSectors.size)
 
             val spots = garageConfig.spots.map { dto ->
                 val sector = savedSectors.first { it.name == dto.sector }
-                ParkingSpot(id = 0, sector = sector, isOccupied = false)
+                ParkingSpot(
+                    id = 0,
+                    sector = sector,
+                    isOccupied = dto.occupied,
+                    latitude = dto.lat,
+                    longitude = dto.lng
+                )
             }
             garageRepository.saveAllSpots(spots)
             logger.info("{} vagas carregadas e persistidas.", spots.size)

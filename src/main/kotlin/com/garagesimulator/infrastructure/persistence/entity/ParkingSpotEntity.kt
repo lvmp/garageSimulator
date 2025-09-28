@@ -18,4 +18,6 @@ data class ParkingSpotEntity(
     val sector: SectorEntity,
 
     var isOccupied: Boolean,
+    val latitude: Double,
+    val longitude: Double,
 )

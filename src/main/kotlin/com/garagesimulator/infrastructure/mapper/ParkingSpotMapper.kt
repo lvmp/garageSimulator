@@ -11,11 +11,15 @@ class ParkingSpotMapper(
     fun toEntity(domain: ParkingSpot) = ParkingSpotEntity(
         id = domain.id,
         sector = sectorMapper.toEntity(domain.sector),
-        isOccupied = domain.isOccupied
+        isOccupied = domain.isOccupied,
+        latitude = domain.latitude,
+        longitude = domain.longitude
     )
     fun toDomain(entity: ParkingSpotEntity) = ParkingSpot(
         id = entity.id,
         sector = sectorMapper.toDomain(entity.sector),
-        isOccupied = entity.isOccupied
+        isOccupied = entity.isOccupied,
+        latitude = entity.latitude,
+        longitude = entity.longitude
     )
 }

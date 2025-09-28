@@ -13,5 +13,6 @@ interface GarageRepositoryPort {
     fun getTotalSpotsCount(): Int
     fun saveAllSpots(spots: List<ParkingSpot>): List<ParkingSpot>
     fun saveSpot(spot: ParkingSpot): ParkingSpot
+    fun findSpotByCoordinates(latitude: Double, longitude: Double): ParkingSpot?
     fun saveAllSectors(sectors: List<Sector>): List<Sector>
 }

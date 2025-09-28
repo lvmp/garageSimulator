@@ -1,5 +1,6 @@
 package com.garagesimulator.domain.model
 
+import java.math.BigDecimal
 import java.time.Duration
 import java.time.LocalDateTime
 import kotlin.math.ceil
@@ -15,8 +16,8 @@ data class ParkingSession(
     val parkingSpot: ParkingSpot,
     val entryTime: LocalDateTime,
     var exitTime: LocalDateTime? = null,
-    val dynamicPricePercentage: Double = 0.0, // Ex: 0.1 para +10%, -0.1 para -10%
-    var finalCost: Double? = null,
+    val dynamicPricePercentage: BigDecimal? = BigDecimal.ZERO, // Ex: 0.1 para +10%, -0.1 para -10%
+    var finalCost: BigDecimal? = BigDecimal.ZERO,
 ) {
 
     fun calculateCost() {
@@ -25,13 +26,13 @@ data class ParkingSession(
         val durationInMinutes = Duration.between(entryTime, exitTime).toMinutes()
 
         if (durationInMinutes <= 30) {
-            finalCost = 0.0
+            finalCost = BigDecimal.ZERO
             return
         }
 
-        val hours = ceil(durationInMinutes / 60.0).toInt()
-        val baseCost = hours * parkingSpot.sector.basePrice
-        val adjustedCost = baseCost * (1 + dynamicPricePercentage)
+        val hours = ceil(durationInMinutes.toDouble() / 60.0).toInt()
+        val baseCost = parkingSpot.sector.basePrice.multiply(BigDecimal(hours))
+        val adjustedCost = baseCost.multiply(BigDecimal.ONE.add(dynamicPricePercentage))
 
         finalCost = adjustedCost
     }

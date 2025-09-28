@@ -43,4 +43,8 @@ class GarageRepositoryGateway(
         val savedEntity = spotRepository.save(spotMapper.toEntity(spot))
         return spotMapper.toDomain(savedEntity)
     }
+
+    override fun findSpotByCoordinates(latitude: Double, longitude: Double): ParkingSpot? {
+        return spotRepository.findByLatitudeAndLongitude(latitude, longitude)?.let { spotMapper.toDomain(it) }
+    }
 }

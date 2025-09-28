@@ -2,6 +2,7 @@ package com.garagesimulator.application.usecase
 
 import com.garagesimulator.application.port.ParkingSessionRepositoryPort
 import org.slf4j.LoggerFactory
+import java.math.BigDecimal
 import java.time.LocalDate
 
 class GetRevenueUseCase(
@@ -10,10 +11,10 @@ class GetRevenueUseCase(
 
     private val logger = LoggerFactory.getLogger(GetRevenueUseCase::class.java)
 
-    fun execute(date: LocalDate, sectorName: String): Double {
+    fun execute(date: LocalDate, sectorName: String): BigDecimal {
         logger.info("Calculando receita para data {} e setor {}", date, sectorName)
         val finishedSessions = parkingSessionRepository.findFinishedByDateAndSector(date, sectorName)
-        val totalRevenue = finishedSessions.sumOf { it.finalCost ?: 0.0 }
+        val totalRevenue = finishedSessions.sumOf { it.finalCost ?: BigDecimal.ZERO }
         logger.info("Receita total para data {} e setor {}: {}", date, sectorName, totalRevenue)
         return totalRevenue
     }
