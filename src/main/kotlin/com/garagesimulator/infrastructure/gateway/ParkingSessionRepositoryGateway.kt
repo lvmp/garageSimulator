@@ -23,9 +23,8 @@ class ParkingSessionRepositoryGateway(
     }
 
     override fun findFinishedByDateAndSector(date: LocalDate, sectorName: String): List<ParkingSession> {
-        // Nota: A conversão de LocalDate para Instant pode precisar de ajustes dependendo do fuso horário do DB.
-        // Para simplificar, usamos o início do dia.
-        val startOfDay = date.atStartOfDay().toInstant(java.time.ZoneOffset.UTC)
-        return repository.findFinishedByDateAndSector(startOfDay, sectorName).map { mapper.toDomain(it) }
+        val startOfDay = date.atStartOfDay()
+        val endOfDay = date.atTime(23, 59, 59, 999999999)
+        return repository.findFinishedByDateAndSector(startOfDay, endOfDay, sectorName).map { mapper.toDomain(it) }
     }
 }
