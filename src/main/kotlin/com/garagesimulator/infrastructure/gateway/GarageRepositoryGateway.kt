@@ -38,4 +38,9 @@ class GarageRepositoryGateway(
         val savedEntities = sectorRepository.saveAll(sectors.map { sectorMapper.toEntity(it) })
         return savedEntities.map { sectorMapper.toDomain(it) }
     }
+
+    override fun saveSpot(spot: ParkingSpot): ParkingSpot {
+        val savedEntity = spotRepository.save(spotMapper.toEntity(spot))
+        return spotMapper.toDomain(savedEntity)
+    }
 }

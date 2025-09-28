@@ -12,5 +12,6 @@ interface GarageRepositoryPort {
     fun getOccupiedSpotsCount(): Int
     fun getTotalSpotsCount(): Int
     fun saveAllSpots(spots: List<ParkingSpot>): List<ParkingSpot>
+    fun saveSpot(spot: ParkingSpot): ParkingSpot
     fun saveAllSectors(sectors: List<Sector>): List<Sector>
 }

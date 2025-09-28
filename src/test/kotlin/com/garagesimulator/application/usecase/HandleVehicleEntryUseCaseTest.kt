@@ -24,6 +24,7 @@ class HandleVehicleEntryUseCaseTest {
     fun setUp() {
         garageRepository = mockk(relaxed = true)
         parkingSessionRepository = mockk(relaxed = true)
+        every { garageRepository.saveSpot(any()) } answers { invocation.args[0] as ParkingSpot }
         handleVehicleEntryUseCase = HandleVehicleEntryUseCase(garageRepository, parkingSessionRepository)
     }
 
