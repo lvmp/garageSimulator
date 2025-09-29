@@ -1,78 +1,75 @@
 package com.garagesimulator.infrastructure.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.kotlinModule
 import com.garagesimulator.application.exception.GarageFullException
 import com.garagesimulator.application.exception.ParkingSessionNotFoundException
 import com.garagesimulator.application.usecase.HandleVehicleEntryUseCase
 import com.garagesimulator.application.usecase.HandleVehicleExitUseCase
 import com.garagesimulator.infrastructure.controller.dto.WebhookEventDTO
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import java.time.LocalDateTime
 
+@WebMvcTest(WebhookController::class)
 class WebhookControllerTest {
 
+    @Autowired
     private lateinit var mockMvc: MockMvc
-    private val handleVehicleEntryUseCase: HandleVehicleEntryUseCase = mockk(relaxed = true)
-    private val handleVehicleExitUseCase: HandleVehicleExitUseCase = mockk(relaxed = true)
-    private val objectMapper = ObjectMapper().registerModule(kotlinModule()).registerModule(JavaTimeModule())
 
-    @BeforeEach
-    fun setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(WebhookController(handleVehicleEntryUseCase, handleVehicleExitUseCase)).build()
-    }
+    @Autowired
+    private lateinit var objectMapper: ObjectMapper
+
+    @MockBean
+    private lateinit var handleVehicleEntryUseCase: HandleVehicleEntryUseCase
+
+    @MockBean
+    private lateinit var handleVehicleExitUseCase: HandleVehicleExitUseCase
 
     @Test
     fun `deve processar evento ENTRY com sucesso`() {
-        // Arrange
         val event = WebhookEventDTO(
-            license_plate = "ABC-1234",
+            license_plate = "ABC1D23",
             entry_time = LocalDateTime.now(),
             lat = -23.0,
             lng = -46.0,
             event_type = "ENTRY"
         )
 
-        // Act & Assert
         mockMvc.perform(post("/webhook")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(event)))
             .andExpect(status().isOk)
 
-        verify(exactly = 1) { handleVehicleEntryUseCase.execute(event.license_plate, event.entry_time!!, event.lat!!, event.lng!!) }
+        verify(handleVehicleEntryUseCase).execute(event.license_plate, event.entry_time!!, event.lat, event.lng)
     }
 
     @Test
     fun `deve processar evento EXIT com sucesso`() {
-        // Arrange
         val event = WebhookEventDTO(
             license_plate = "ABC-1234",
             exit_time = LocalDateTime.now(),
             event_type = "EXIT"
         )
 
-        // Act & Assert
         mockMvc.perform(post("/webhook")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(event)))
             .andExpect(status().isOk)
 
-        verify(exactly = 1) { handleVehicleExitUseCase.execute(event.license_plate, event.exit_time!!) }
+        verify(handleVehicleExitUseCase).execute(event.license_plate, event.exit_time!!)
     }
 
     @Test
     fun `deve retornar 403 FORBIDDEN para GarageFullException`() {
-        // Arrange
         val event = WebhookEventDTO(
             license_plate = "ABC-1234",
             entry_time = LocalDateTime.now(),
@@ -80,9 +77,9 @@ class WebhookControllerTest {
             lng = -46.0,
             event_type = "ENTRY"
         )
-        every { handleVehicleEntryUseCase.execute(any(), any(), any(), any()) } throws GarageFullException()
+        `when`(handleVehicleEntryUseCase.execute(any(), any(), any(), any()))
+            .thenThrow(GarageFullException())
 
-        // Act & Assert
         mockMvc.perform(post("/webhook")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(event)))
@@ -91,18 +88,86 @@ class WebhookControllerTest {
 
     @Test
     fun `deve retornar 404 NOT FOUND para ParkingSessionNotFoundException`() {
-        // Arrange
         val event = WebhookEventDTO(
             license_plate = "ABC-1234",
             exit_time = LocalDateTime.now(),
             event_type = "EXIT"
         )
-        every { handleVehicleExitUseCase.execute(any(), any()) } throws ParkingSessionNotFoundException("ABC-1234")
+        `when`(handleVehicleExitUseCase.execute(any(), any()))
+            .thenThrow(ParkingSessionNotFoundException("ABC-1234"))
 
-        // Act & Assert
         mockMvc.perform(post("/webhook")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(event)))
             .andExpect(status().isNotFound)
     }
+
+    @Test
+    fun `deve retornar 400 BAD REQUEST para placa invalida`() {
+        val event = WebhookEventDTO(
+            license_plate = "ABC-123",
+            entry_time = LocalDateTime.now(),
+            lat = -23.0,
+            lng = -46.0,
+            event_type = "ENTRY"
+        )
+
+        mockMvc.perform(post("/webhook")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(event)))
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("$.errors[0]").value("Field 'license_plate' is not in a valid format."))
+    }
+
+    @Test
+    fun `deve retornar 400 BAD REQUEST para placa com formato incorreto`() {
+        val event = WebhookEventDTO(
+            license_plate = "123-ABCD",
+            entry_time = LocalDateTime.now(),
+            lat = -23.0,
+            lng = -46.0,
+            event_type = "ENTRY"
+        )
+
+        mockMvc.perform(post("/webhook")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(event)))
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("$.errors[0]").value("Field 'license_plate' is not in a valid format."))
+    }
+
+    @Test
+    fun `deve processar com sucesso placa no formato Mercosul sem hifen`() {
+        val event = WebhookEventDTO(
+            license_plate = "ABC1D23",
+            entry_time = LocalDateTime.now(),
+            lat = -23.0,
+            lng = -46.0,
+            event_type = "ENTRY"
+        )
+
+        mockMvc.perform(post("/webhook")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(event)))
+            .andExpect(status().isOk)
+    }
+
+    @Test
+    fun `deve processar com sucesso placa no formato antigo com hifen`() {
+        val event = WebhookEventDTO(
+            license_plate = "ABC-1234",
+            entry_time = LocalDateTime.now(),
+            lat = -23.0,
+            lng = -46.0,
+            event_type = "ENTRY"
+        )
+
+        mockMvc.perform(post("/webhook")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(event)))
+            .andExpect(status().isOk)
+    }
+
+    // Helper for Mockito `when` with `any()`
+    private fun <T> any(): T = org.mockito.ArgumentMatchers.any()
 }

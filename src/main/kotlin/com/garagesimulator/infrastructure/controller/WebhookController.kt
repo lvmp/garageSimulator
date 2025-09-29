@@ -6,6 +6,7 @@ import com.garagesimulator.application.exception.ParkingSessionNotFoundException
 import com.garagesimulator.application.usecase.HandleVehicleEntryUseCase
 import com.garagesimulator.application.usecase.HandleVehicleExitUseCase
 import com.garagesimulator.infrastructure.controller.dto.WebhookEventDTO
+import jakarta.validation.Valid
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -24,7 +25,7 @@ class WebhookController(
     private val logger = LoggerFactory.getLogger(WebhookController::class.java)
 
     @PostMapping
-    fun handleWebhookEvent(@RequestBody event: WebhookEventDTO): ResponseEntity<String> {
+    fun handleWebhookEvent(@Valid @RequestBody event: WebhookEventDTO): ResponseEntity<String> {
         logger.info("Recebendo evento: {}", event.event_type)
         return try {
             when (event.event_type) {

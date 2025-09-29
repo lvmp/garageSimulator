@@ -14,7 +14,7 @@ data class ParkingSessionEntity(
     @ManyToOne(cascade = [CascadeType.ALL])
     val vehicle: VehicleEntity,
 
-    @ManyToOne(cascade = [CascadeType.MERGE])
+    @ManyToOne
     val parkingSpot: ParkingSpotEntity,
 
     val entryTime: LocalDateTime,
