@@ -1,5 +1,6 @@
 package com.garagesimulator.infrastructure.persistence.entity
 
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -14,7 +15,7 @@ data class ParkingSpotEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
-    @ManyToOne(cascade = [jakarta.persistence.CascadeType.MERGE])
+    @ManyToOne(cascade = [CascadeType.MERGE, CascadeType.PERSIST])
     val sector: SectorEntity,
 
     var isOccupied: Boolean,
