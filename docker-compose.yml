@@ -49,7 +49,7 @@ services:
     image: cfontes0estapar/garage-sim:1.0.0
     container_name: garage-event-simulator
     extra_hosts:
-      - "localhost:host-gateway"
+      - "localhost:172.21.0.4"  ##adicionado o extra_host para servir como alias do LOCALHOST apontando para o IP do garage-app, importante validar o IP da maquina. açao necessaria no DockerDesktop do Windows
     ports:
       - "3000:3000"
     networks:
